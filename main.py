@@ -22,34 +22,23 @@ class Player(GameSprite):
             self.rect.x += 5
 
 class Enemy(GameSprite):
-    directionX = 'right'
     directionY = 'down'
     def update(self):
-        global health
-        if self.rect.x <= 470:
-            self.directionX = 'right'
-        if self.rect.x > 600:
-            self.directionX = 'left'
-        
-        if self.rect.y >= 435:
-            self.directionY = 'up'
         if self.rect.y <= 0:
             self.directionY = 'down'
 
-
-
-        if self.directionY == 'up':
-            self.rect.y -= self.speed
         if self.directionY == 'down':
             self.rect.y += self.speed
-        
+        if self.directionY == 'up':
+            self.rect.y -= self.speed
         
         if self.rect.y >= 499:
             self.rect.y = randint(-200, 50)
             self.rect.x = randint(0, 650)
-            health -= 1
-
         
+        if sprite.collide_rect(self, sprite1):
+            self.directionY = 'up'
+
 clock = time.Clock()
 window = display.set_mode((700, 500))
 display.set_caption("Пинг понг")
@@ -60,7 +49,7 @@ sprite1 = Player('Player_dos.png', 250, 400, 7)
 
 Enemys = sprite.Group()
 for i in range(1):
-    EnemyE = Enemy('sharik.png', randint(0, 650), randint(-200, -50), randint(1, 4))
+    EnemyE = Enemy('sharik.png', randint(0, 650), randint(-200, -50), randint(3, 4))
     Enemys.add(EnemyE)
 
 bullets = sprite.Group()
@@ -91,18 +80,6 @@ while game:
         Enemys.update()
         Enemys.draw(window)
         
-        if health == 0:
-            finish = True
-            window.blit(final_text, (250, 200))
-
-    collides = sprite.groupcollide(Enemys, bullets, True, True)
-    for c in collides:
-        EnemyE = Enemy('sharik.png', randint(0, 650), randint(-200, -50), randint(1, 4))
-        Enemys.add(EnemyE)
-
-    if sprite.spritecollide(sprite1, Enemys, False):
-        finish = True
-    
 
 
     schet = font.render('Счет: '+ str(score), True, (255, 255, 255))
