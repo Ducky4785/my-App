@@ -1,12 +1,15 @@
 from pygame import *
 from random import randint
 
-
+score = 0
+health = 3
 class GameSprite(sprite.Sprite):
     def __init__(self, player_image, player_x, player_y, player_speed):
         super().__init__()
         self.image = transform.scale(image.load(player_image), (65, 65))
         self.speed = player_speed
+        self.speedX = player_speed
+        self.speedY = player_speed
         self.rect = self.image.get_rect()
         self.rect.x = player_x
         self.rect.y = player_y
@@ -24,20 +27,30 @@ class Player(GameSprite):
 class Enemy(GameSprite):
     directionY = 'down'
     def update(self):
-        if self.rect.y <= 0:
-            self.directionY = 'down'
+        global health
+        self.rect.x += self.speedX
+        self.rect.y += self.speedY
 
-        if self.directionY == 'down':
-            self.rect.y += self.speed
+        if self.rect.x >= 650:
+            self.speedX *= -1
+        if self.rect.x <= 0:
+            self.speedX *= -1
         if self.directionY == 'up':
-            self.rect.y -= self.speed
+            if self.rect.y <= 0:
+                self.speedY *= -1
+
         
         if self.rect.y >= 499:
             self.rect.y = randint(-200, 50)
             self.rect.x = randint(0, 650)
+            health -= 1
+            self.directionY = 'down'
         
         if sprite.collide_rect(self, sprite1):
+            self.speedY *= -1
             self.directionY = 'up'
+            
+
 
 clock = time.Clock()
 window = display.set_mode((700, 500))
@@ -55,10 +68,6 @@ for i in range(1):
 bullets = sprite.Group()
 
 FPS = 60
-
-
-score = 0
-health = 3
 
     
 
@@ -91,6 +100,10 @@ while game:
         if sprite.collide_rect(sprite1, j):
             window.blit(lose, (200, 0))
             score += 1
+
+    if health <= 0:
+        window.blit(final_text, (250, 200))
+        finish = True
 
 
     for e in event.get():
