@@ -49,7 +49,14 @@ class Enemy(GameSprite):
         if sprite.collide_rect(self, sprite1):
             self.speedY *= -1
             self.directionY = 'up'
-            
+
+
+mixer.init()
+otskok = mixer.Sound('otskok.mp3')
+
+mixer.music.load('music.mp3')
+mixer.music.play()
+
 
 
 clock = time.Clock()
@@ -100,6 +107,7 @@ while game:
         if sprite.collide_rect(sprite1, j):
             window.blit(lose, (200, 0))
             score += 1
+            otskok.play()
 
     if health <= 0:
         window.blit(final_text, (250, 200))
