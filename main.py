@@ -69,7 +69,7 @@ sprite1 = Player('Player_dos.png', 250, 400, 7)
 
 Enemys = sprite.Group()
 for i in range(1):
-    EnemyE = Enemy('sharik.png', randint(0, 650), randint(-200, -50), randint(3, 4))
+    EnemyE = Enemy('sharik.png', randint(0, 650), randint(-200, -50), randint(3, 3))
     Enemys.add(EnemyE)
 
 bullets = sprite.Group()
