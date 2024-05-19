@@ -1,6 +1,7 @@
 from pygame import *
 from random import randint
 
+
 score = 0
 health = 3
 class GameSprite(sprite.Sprite):
@@ -15,7 +16,7 @@ class GameSprite(sprite.Sprite):
         self.rect.y = player_y
     def reset(self):
         window.blit(self.image, (self.rect.x, self.rect.y))
-    
+
 class Player(GameSprite):
     def update(self):
         keys_pressed = key.get_pressed()
@@ -28,6 +29,7 @@ class Enemy(GameSprite):
     directionY = 'down'
     def update(self):
         global health
+        
         self.rect.x += self.speedX
         self.rect.y += self.speedY
 
@@ -41,7 +43,7 @@ class Enemy(GameSprite):
 
         
         if self.rect.y >= 499:
-            self.rect.y = randint(-200, 50)
+            self.rect.y = randint(150, 150)
             self.rect.x = randint(0, 650)
             health -= 1
             self.directionY = 'down'
@@ -50,18 +52,15 @@ class Enemy(GameSprite):
             self.speedY *= -1
             self.directionY = 'up'
 
-
 mixer.init()
 otskok = mixer.Sound('otskok.mp3')
 
 mixer.music.load('music.mp3')
 mixer.music.play()
 
-
-
 clock = time.Clock()
 window = display.set_mode((700, 500))
-display.set_caption("Пинг понг")
+display.set_caption("НедоПинг понг")
 background = transform.scale(image.load("Fon.jpg"), (700, 500))
 
 
@@ -69,20 +68,28 @@ sprite1 = Player('Player_dos.png', 250, 400, 7)
 
 Enemys = sprite.Group()
 for i in range(1):
-    EnemyE = Enemy('sharik.png', randint(0, 650), randint(-200, -50), randint(3, 3))
+    EnemyE = Enemy('sharik.png', 350, 150, 3)
     Enemys.add(EnemyE)
+    
 
 bullets = sprite.Group()
-
+b_x = 20
+b_y = 10
+for i in range(18):
+    if i == 9:
+        b_y += 65
+        b_x = 20
+    bullet = GameSprite('block.png', b_x, b_y, 0)
+    bullets.add(bullet)
+    b_x += 75
 FPS = 60
-
-    
 
 font.init()
 font = font.Font(None, 50)
 
 lose = font.render('+1', True, (255, 255, 255))
 final_text = font.render('Ты проиграл', True, (255, 255, 255))
+vin_text = font.render('Ты выиграл', True, (255, 255, 255))
 
 
 game = True
@@ -95,6 +102,14 @@ while game:
         sprite1.update()
         Enemys.update()
         Enemys.draw(window)
+        bullets.update()
+        bullets.draw(window)
+        if sprite.groupcollide(Enemys, bullets, False, True):
+            EnemyE.speedY *= -1
+            EnemyE.directionY = 'up'
+        if len(bullets) == 0:
+            window.blit(vin_text, (250, 200))
+            finish = True
         
 
 
